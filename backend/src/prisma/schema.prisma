@@ -1,0 +1,94 @@
+﻿// NexusHardware — Schema de base de datos Prisma
+// Modela las entidades principales del e-commerce
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Usuario ──────────────────────────────────────────────────────────────────
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String    // Almacenado como hash bcrypt
+  name      String
+  role      Role      @default(CUSTOMER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  orders    Order[]
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+// ─── Categoría de producto ────────────────────────────────────────────────────
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique  // ej: "Tarjetas Gráficas", "Procesadores", "RAM"
+  slug     String    @unique  // ej: "tarjetas-graficas"
+  products Product[]
+}
+
+// ─── Marca ────────────────────────────────────────────────────────────────────
+model Brand {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique  // ej: "NVIDIA", "AMD", "Kingston"
+  slug     String    @unique
+  logoUrl  String?
+  products Product[]
+}
+
+// ─── Producto ─────────────────────────────────────────────────────────────────
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  slug        String      @unique
+  description String?
+  price       Decimal     @db.Decimal(10, 2)
+  stock       Int         @default(0)
+  imageUrl    String?
+  categoryId  Int
+  category    Category    @relation(fields: [categoryId], references: [id])
+  brandId     Int
+  brand       Brand       @relation(fields: [brandId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+// ─── Orden de compra ──────────────────────────────────────────────────────────
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  status    OrderStatus @default(PENDING)
+  total     Decimal     @db.Decimal(10, 2)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+// ─── Item de orden ────────────────────────────────────────────────────────────
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+}
