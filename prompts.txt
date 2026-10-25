@@ -1,0 +1,84 @@
+﻿================================================================================
+LOG DE PROMPTS — NexusHardware E-commerce
+Proyecto: Trabajo Semestre 2 - 2026 | Desempeño de Sistemas | UTEM
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #1]
+Fecha y hora: 2026-10-24 21:24 (UTC-3, Santiago de Chile)
+Modelo IA: Claude Sonnet (Thinking)
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Necesito que me ayudes con el siguiente trabajo:
+@[Trabajo Semestre 2 - 2026.pdf]
+Configura los archivos para el proyecto, AGENTS*.md o AGENTS*.yaml, lo dejo a
+tu criterio, para la solución e-commerce estoy pensando en una temática de
+componentes de computador, con marcas como ASUS, NVIDIA, KINGSTONE, etc,
+también para el desarrollo de este trabajo necesito que crees un prompts.txt en
+donde vayas registrando mis prompts con fecha y hora junto a una explicación de
+lo que hiciste en base a el mismo (si instalaste algo, explicarste el diseño de
+lo que se codificara, etc.) junto al modelo de ia que esta respondiendo, cada
+vez que yo te hable debes ver este log. vamos creando de a poco. y por supuesto
+no crees ni modifiques nada sin mi aprobación."
+
+ACCIÓN REALIZADA:
+1. Se leyó y analizó el enunciado del trabajo (PDF) extrayendo:
+   - Fases del proyecto: 1.1 sitio funcional, 1.2 generadores de carga, 2 análisis de desempeño.
+   - Requisitos: catálogo, carrito, checkout sandbox, login, GA4, k6, Git, deploy en la nube.
+2. Se consultó al usuario sobre: ubicación del proyecto, stack tecnológico y nombre de la tienda.
+   - Respuestas: carpeta raíz de "Desempeño de sistemas", Next.js + Node.js/Express + PostgreSQL, nombre: NexusHardware.
+3. Se propuso el plan de archivos y se esperó aprobación explícita del usuario.
+4. Con aprobación, se crearon los siguientes archivos:
+   - AGENTS.md: configuración completa del agente con descripción del proyecto, stack,
+     fases, reglas de comportamiento, expertise requerido y estructura de directorios.
+   - prompts.txt: este archivo de log (registro inicial).
+   No se instaló ningún paquete ni se generó código de aplicación en esta sesión.
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #2]
+Fecha y hora: 2026-10-24 21:56 (UTC-3, Santiago de Chile)
+Modelo IA: Claude Sonnet (Thinking)
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Ok, usaré gitkraken pero empecemos"
+[Con aprobación previa del plan de estructura base del proyecto]
+
+ACCIÓN REALIZADA:
+Se creó la estructura base completa del proyecto NexusHardware. Detalle:
+
+1. ESTRUCTURA DE CARPETAS creada en nexushardware/:
+   - frontend/          (Next.js)
+   - backend/src/routes, controllers, middleware, prisma/
+   - backend/tests/
+   - load-tests/
+   - docs/
+
+2. ARCHIVOS RAÍZ creados:
+   - nexushardware/README.md       (descripción general del proyecto)
+   - nexushardware/.gitignore      (excluye node_modules, .env, .next, build, etc.)
+
+3. FRONTEND — Next.js inicializado con:
+   - create-next-app@latest (v16.4.3)
+   - TypeScript + ESLint + App Router + src/ directory
+   - Sin Tailwind (se usará CSS Modules)
+   - 346 paquetes instalados
+
+4. BACKEND — Node.js + Express configurado:
+   - package.json con dependencias: express, cors, dotenv, morgan, bcryptjs,
+     jsonwebtoken, express-validator, @prisma/client
+   - src/index.js: servidor Express con middlewares CORS, JSON, morgan y
+     ruta de health check en /api/health
+   - .env.example con variables: PORT, DATABASE_URL, JWT_SECRET, FRONTEND_URL
+   - src/prisma/schema.prisma: modelos User, Category, Brand, Product, Order,
+     OrderItem con relaciones y enums (Role, OrderStatus)
+   - tests/health.test.js: test básico del endpoint /api/health (Jest + supertest)
+   - 409 paquetes instalados
+
+5. VALIDACIÓN: servidor backend iniciado correctamente en http://localhost:4000
+   Nota: el usuario usará GitKraken para gestión del repositorio Git.
+
+================================================================================
