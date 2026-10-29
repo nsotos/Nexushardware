@@ -1,4 +1,4 @@
-﻿/**
+/**
  * NexusHardware - Servidor principal de la API
  * Punto de entrada de la aplicación Express
  */
@@ -45,9 +45,11 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Iniciar servidor ─────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`🚀 NexusHardware API corriendo en http://localhost:${PORT}`);
-  console.log(`   Ambiente: ${process.env.NODE_ENV || "development"}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`🚀 NexusHardware API corriendo en http://localhost:${PORT}`);
+    console.log(`   Ambiente: ${process.env.NODE_ENV || "development"}`);
+  });
+}
 
 module.exports = app; // Exportado para testing con supertest

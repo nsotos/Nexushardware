@@ -1,4 +1,4 @@
-﻿================================================================================
+================================================================================
 LOG DE PROMPTS — NexusHardware E-commerce
 Proyecto: Trabajo Semestre 2 - 2026 | Desempeño de Sistemas | UTEM
 ================================================================================
@@ -82,3 +82,40 @@ Se creó la estructura base completa del proyecto NexusHardware. Detalle:
    Nota: el usuario usará GitKraken para gestión del repositorio Git.
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #3]
+Fecha y hora: 2026-10-29 11:32 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash (High)
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Te autorizo, pero en el agent.md, dice explicitamente que en prompts.txt van solo los prompts en los que tu agregues o modifiques archivos, leer agent.md y prompts.txt no debe ser incluido como entrada, ya que esto espara cualquier agente con el que trabajemos"
+
+ACCIÓN REALIZADA:
+1. GOBERNANZA DEL LOG:
+   - Se ajustó el criterio de prompts.txt eliminando registros que correspondían únicamente a lecturas o diagnósticos pasivos, asegurando que solo se registren prompts con modificaciones de archivos o instalaciones.
+
+2. ENTORNO Y DEPENDENCIAS:
+   - Se instaló Node.js LTS (v26.13.0) y npm (v11.20.0) en el sistema operativo mediante el gestor winget.
+
+3. FRONTEND (Next.js):
+   - Se inicializó la aplicación Next.js en frontend/ utilizando create-next-app de forma no interactiva:
+     * App Router con directorio src/
+     * TypeScript + ESLint
+     * CSS Modules (sin Tailwind)
+     * Alias de importación @/*
+     * 344 paquetes instalados
+   - Se ejecutó y validó la compilación de producción con npm run build, finalizando en 3.3s con 0 errores.
+
+4. BACKEND (Express + Prisma + Jest):
+   - Se instalaron las dependencias reales del backend (409 paquetes en backend/node_modules).
+   - Se solucionó un error de formato en backend/package.json eliminando el carácter oculto UTF-8 BOM que impedía su lectura por parte de Jest.
+   - Se ajustó backend/src/index.js para condicionar la escucha del puerto (app.listen) fuera del entorno de tests (process.env.NODE_ENV !== "test").
+   - Se ejecutó la suite de pruebas unitarias (npm test), logrando 100% de éxito en tests/health.test.js.
+
+================================================================================
+
+
+
+
