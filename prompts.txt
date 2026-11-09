@@ -1,4 +1,4 @@
-﻿================================================================================
+================================================================================
 LOG DE PROMPTS — NexusHardware E-commerce
 Proyecto: Trabajo Semestre 2 - 2026 | Desempeño de Sistemas | UTEM
 ================================================================================
@@ -80,5 +80,154 @@ Se creó la estructura base completa del proyecto NexusHardware. Detalle:
 
 5. VALIDACIÓN: servidor backend iniciado correctamente en http://localhost:4000
    Nota: el usuario usará GitKraken para gestión del repositorio Git.
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #3]
+Fecha y hora: 2026-10-26 21:28 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"listo" [Configuración de credenciales de PostgreSQL y ejecución de migración de base de datos]
+
+ACCIÓN REALIZADA:
+1. CONFIGURACIÓN DE ENTORNO:
+   - Se creó backend/.env con DATABASE_URL="postgresql://postgres:3112@localhost:5432/nexushardware_db",
+     puerto 4000 y clave secreta JWT.
+   - Se restauró backend/.env.example como plantilla limpia sin credenciales expuestas para control de versiones.
+2. CORRECCIÓN Y CONFIGURACIÓN DE PRISMA:
+   - Se corrigió el archivo src/prisma/schema.prisma eliminando caracteres BOM UTF-8 para compatibilidad con Prisma CLI.
+   - Se agregó la configuración "prisma": { "schema": "src/prisma/schema.prisma" } en backend/package.json.
+3. MIGRACIÓN INICIAL DE BASE DE DATOS:
+   - Se ejecutó `npx prisma migrate dev --name init`.
+   - Se creó la base de datos local `nexushardware_db` en el motor PostgreSQL 18.
+   - Se aplicó la migración inicial creando las tablas relacionales: User, Category, Brand, Product, Order, OrderItem.
+   - Se generó el cliente de Prisma (@prisma/client v5.22.0) en backend/node_modules/@prisma/client.
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #4]
+Fecha y hora: 2026-10-26 21:44 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Sigamos" [Aprobación para creación y ejecución del script de seed de datos de hardware]
+
+ACCIÓN REALIZADA:
+1. SCRIPT DE SEED (backend/src/prisma/seed.js):
+   - Se implementó el script de inicialización de datos para PostgreSQL utilizando Prisma Client y bcryptjs.
+   - Usuarios: creación de usuario Administrador (admin@nexushardware.cl) y Cliente (cliente@utem.cl) con contraseñas encriptadas con bcrypt.
+   - Marcas: inserción de las 8 marcas líderes requeridas (ASUS, NVIDIA, AMD, Kingston, Corsair, Intel, MSI, Samsung).
+   - Categorías: inserción de 8 categorías de componentes (Tarjetas Gráficas, Procesadores, Memorias RAM, Almacenamiento SSD, Placas Madre, Fuentes de Poder, Gabinetes, Refrigeración).
+   - Productos: inserción de 21 componentes de computador reales con especificaciones técnicas, precios en CLP, stock y URLs de imágenes.
+2. CONFIGURACIÓN EN PACKAGE.JSON:
+   - Se configuró el comando `"seed": "node src/prisma/seed.js"` en el bloque `"prisma"` de backend/package.json.
+   - Se añadió el script `"db:seed": "prisma db seed"` en `"scripts"`.
+3. EJECUCIÓN Y VALIDACIÓN:
+   - Se ejecutó `npx prisma db seed` en PostgreSQL 18:
+     - 2 usuarios creados.
+     - 8 marcas registradas.
+     - 8 categorías registradas.
+     - 21 productos insertados exitosamente.
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #5]
+Fecha y hora: 2026-10-26 22:17 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Sigamos" [Aprobación para implementación de la API REST de catálogo: controladores, rutas y tests]
+
+ACCIÓN REALIZADA:
+1. ARQUITECTURA Y PRISMA SINGLETON:
+   - Se creó `backend/src/prisma/client.js` para gestionar una única instancia reutilizable de PrismaClient y prevenir saturación del pool de conexiones de PostgreSQL.
+2. CONTROLADORES (backend/src/controllers/productController.js):
+   - `getProducts`: listado con soporte para paginación (`page`, `limit`), filtros relacionales (`category`, `brand`), búsqueda textual insensible a mayúsculas (`search`), rango de precios (`minPrice`, `maxPrice`) y ordenamiento (`sortBy`).
+   - `getProductBySlug`: consulta detallada de producto individual por slug con sus relaciones de marca y categoría; manejo de error 404 para elementos no encontrados.
+   - `getCategories`: listado alfabético de todas las categorías con conteo dinámico de productos asociados.
+   - `getBrands`: listado de marcas oficiales con logo y conteo de productos.
+3. RUTAS HTTP (backend/src/routes/):
+   - `productRoutes.js`: rutas montadas en `/api/products` (`GET /`, `GET /:slug`).
+   - `categoryRoutes.js`: rutas montadas en `/api/categories` (`GET /`).
+   - `brandRoutes.js`: rutas montadas en `/api/brands` (`GET /`).
+   - Se conectaron los enrutadores en `backend/src/index.js`.
+4. TESTING AUTOMATIZADO Y VALIDACIÓN:
+   - Se creó `backend/tests/products.test.js` con 8 casos de prueba que cubren: paginación, filtros por marca, búsqueda de texto, respuesta 200 de detalle, respuesta 404 para slugs inválidos, y respuestas de categorías y marcas.
+   - Se ejecutó `npm test`: **2/2 suites pasadas, 9/9 tests exitosos (100% de aprobación)** en 1.4s.
+
+================================================================================
+
+
+--------------------------------------------------------------------------------
+[ENTRADA #6]
+Fecha y hora: 2026-11-08 22:20 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"ok, dejemoslo asi, ahora creemos el frontend, necesito que sea simple, sin mucho detalle, que se vea de manera grafica que existen los botones, carrito, etc."
+[Aprobación explícita para la implementación del Frontend base y flujo del Carrito]
+
+ACCIÓN REALIZADA:
+1. CLIENTE DE API Y RESILIENCIA (frontend/src/lib/api.ts):
+   - Se implementó fetcher centralizado para productos, categorías y marcas contra la API REST (http://localhost:4000/api).
+   - Se incorporó soporte de fallback transparente hacia mockData para que la interfaz funcione de inmediato aun con el backend desconectado.
+2. COMPONENTES GLOBALES DE INTERFAZ:
+   - Navbar (frontend/src/components/layout/Navbar.tsx y .module.css): encabezado moderno con logo NexusHardware, enlaces de navegación, barra de búsqueda y botón interactivo del carrito con contador de unidades sincronizado con CartContext.
+   - Footer (frontend/src/components/layout/Footer.tsx y .module.css): pie de página con información de la tienda, categorías, marcas y acreditación académica para la UTEM.
+3. COMPONENTES DE UI REUTILIZABLES:
+   - ProductCard (frontend/src/components/ui/ProductCard.tsx y .module.css): tarjeta con imagen, marca, nombre, precio formateado en CLP, badges de oferta/nuevo y botón gráfico interactivo "Añadir al carrito" con confirmación visual.
+   - CategoryCard (frontend/src/components/ui/CategoryCard.tsx y .module.css): tarjetas con iconos para navegación rápida por categoría de hardware.
+4. PÁGINA DE INICIO — HOME (frontend/src/app/page.tsx y page.module.css):
+   - Hero banner con llamadas a la acción gráficas ("Ver Productos", "Ver Mi Carrito") y badges de confianza (Envíos a todo Chile, Garantía oficial, Checkout Sandbox).
+   - Cinta de marcas oficiales (ASUS, NVIDIA, AMD, Kingston, Corsair, Intel, MSI, Samsung).
+   - Grid de categorías y catálogo de productos destacados con interacción directa hacia el carrito.
+5. VISTA DE CARRITO DE COMPRAS (frontend/src/app/carrito/page.tsx y carrito.module.css):
+   - Visualización gráfica de la orden de compra con desglose de productos añadidos.
+   - Controles interactivos de cantidad (+ / -), botón para eliminar ítem y botón para vaciar el carrito.
+   - Resumen de costos con subtotal, despacho gratuito y total en CLP.
+   - Botón visible "Proceder al Checkout (Sandbox)" y "Seguir Comprando".
+   - Estado visual para carrito vacío con redirección al catálogo.
+6. CONFIGURACIÓN Y COMPILACIÓN:
+   - Actualización de frontend/src/app/layout.tsx envolviendo la aplicación con CartProvider, Navbar y Footer.
+   - Configuración de imágenes en frontend/next.config.ts.
+   - Validación de compilación ejecutando `npm run build`: compilación de Next.js 16.4.3 exitosa sin errores de TypeScript ni de prerenderizado estático (/ y /carrito).
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #7]
+Fecha y hora: 2026-11-08 22:28 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Ok, necesito 2 cosas, confirmame que todo lo que esta en la pagina es lo que hemos estado hablando en prompt.txt y lo segundo quiero que sean colores retro claros"
+"Cambia los colores."
+
+ACCIÓN REALIZADA:
+1. AUDITORÍA Y CONFIRMACIÓN DE ALINEACIÓN:
+   - Se verificó y confirmó que el 100% de los elementos visibles en el sitio web (las 8 marcas oficiales, las 8 categorías de componentes, los 21 productos de hardware con precios en CLP y el flujo interactivo de carrito) corresponden exactamente a lo acordado en las entradas anteriores de prompts.txt y a los requerimientos de la Fase 1.1 del enunciado académico.
+2. REDISEÑO VISUAL COMPLETO A ESTÉTICA RETRO CLARA:
+   - Se transformó el sistema de diseño en `frontend/src/app/globals.css`:
+     - Fondo base: tono beige/crema cálido vintage (#f4f0ea) inspirado en la estética de carcasas de hardware clásico de los años 80/90.
+     - Superficies y tarjetas: blanco marfil (#ffffff) y beige sutil (#ebe5dc).
+     - Bordes: tonos gris cálido bien definidos (#d8cfc4 y #bfb4a4) con sombras físicas retro.
+     - Acentos de color: naranja cálido retro (#d9531e) y azul cobalto clásico estilo IBM (#2b59c3).
+     - Tipografía y contraste: texto carbón oscuro de alta legibilidad (#22252a) sobre fondo claro.
+3. ADAPTACIÓN DE MÓDULOS DE ESTILOS:
+   - `Navbar.module.css`: barra de navegación con fondo translúcido claro retro (rgba(244, 240, 234, 0.94)), borde delimitado y badge de carrito en naranja vintage con texto blanco.
+   - `page.module.css`: gradientes del Hero y del Banner promocional adaptados a tonos cálidos y de alto contraste con texto oscuro.
+   - `Footer.module.css`: fondo en contraste suave (#ebe5dc) con sellos y textos legibles.
+   - `ProductCard.module.css` y `AddToCartDetail.module.css`: adaptación de botones de compra y confirmaciones visuales a la nueva paleta.
+4. VALIDACIÓN DE COMPILACIÓN:
+   - Se limpió el caché `.next` y se ejecutó `npm run build` en frontend: compilación de Next.js 16.4.3 exitosa sin advertencias ni errores (rutas `/` y `/carrito` prerenderizadas).
 
 ================================================================================

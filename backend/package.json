@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "nexushardware-backend",
   "version": "1.0.0",
   "description": "API REST para NexusHardware - E-commerce de componentes de computador",
@@ -9,9 +9,15 @@
     "test": "jest --coverage",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "db:seed": "prisma db seed"
   },
-  "keywords": ["ecommerce", "hardware", "api", "express"],
+  "keywords": [
+    "ecommerce",
+    "hardware",
+    "api",
+    "express"
+  ],
   "author": "NexusHardware Team",
   "license": "ISC",
   "dependencies": {
@@ -23,6 +29,10 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0"
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma",
+    "seed": "node src/prisma/seed.js"
   },
   "devDependencies": {
     "jest": "^29.7.0",

@@ -1,4 +1,4 @@
-﻿# AGENTS.md — Configuración del Agente para NexusHardware
+# AGENTS.md — Configuración del Agente para NexusHardware
 
 ## Descripción del Proyecto
 
@@ -71,32 +71,36 @@ Tienda en línea especializada en componentes de computador de marcas reconocida
 
 ## Reglas de Comportamiento del Agente
 
-### 📋 Registro de sesión y prompts
-1. **Al iniciar cada sesión**, leer el archivo `prompts.txt` para entender el contexto y el historial de lo que se ha construido hasta el momento.
-2. **Después de cada prompt del usuario**, agregar una entrada en `prompts.txt` con:
-   - Fecha y hora exacta
-   - Prompt completo del usuario
-   - Explicación resumida de lo que se hizo (instalaciones, diseño, código, etc.)
-   - Modelo de IA utilizado en esa respuesta
+### 📋 Registro de sesión y prompts (PRIORIDAD MÁXIMA — BITÁCORA UNIFICADA)
+1. **Prioridad Absoluta**: Cada vez que se implemente una modificación de código, instalación, arquitectura o migración, el registro en `prompts.txt` **debe realizarse de forma obligatoria e inmediata en el mismo turno**. Nunca debe responderse al usuario habiendo aplicado cambios sin haber actualizado previamente `prompts.txt`.
+2. **Bitácora Única y Equitativa del Equipo**:
+   - Todo el equipo comparte un único archivo central: `prompts.txt`.
+   - **Registro por Hitos Funcionales**: Para asegurar equilibrio y equidad entre todos los integrantes, solo se registran bloques o hitos completos (features, migraciones, nuevos módulos). No se registran consultas, dudas ni micro-iteraciones cosméticas.
+   - Si ocurre un conflicto de Git en `prompts.txt` (append-only), se resuelven aceptando ambos bloques de forma secuencial.
+3. **Al iniciar cada sesión**, el agente debe leer `prompts.txt` para entender el contexto acumulado por todos los integrantes del equipo.
+4. **Formato obligatorio de cada entrada**:
+   - Fecha y hora exacta (UTC-3)
+   - Modelo de IA utilizado
+   - Prompt representativo del hito
+   - Explicación detallada de lo que se implementó (archivos creados, diseño y testing)
+
 
 ### ✅ Siempre antes de implementar
-3. **Explicar detalladamente** qué se va a hacer, en qué módulos o archivos fuente, y por qué, antes de escribir cualquier código.
-4. **Solo implementar con la confirmación explícita del usuario.** Nunca actuar sin aprobación.
+4. **Explicar detalladamente** qué se va a hacer, en qué módulos o archivos fuente, y por qué, antes de escribir cualquier código.
+5. **Solo implementar con la confirmación explícita del usuario.** Nunca actuar sin aprobación.
 
 ### 💬 Idioma y comunicación
-5. Usar siempre **español neutro latinoamericano** en todas las respuestas, comentarios del código y documentación.
-6. Mantener respuestas claras, concisas y bien estructuradas.
+6. Usar siempre **español neutro latinoamericano** en todas las respuestas, comentarios del código y documentación.
+7. Mantener respuestas claras, concisas y bien estructuradas.
 
 ### 🧑‍💻 Calidad del código
-7. **Documentar el código** con comentarios explicativos en cada función, módulo y lógica compleja.
-8. **Proponer testing automático** (unitario o de integración) para cada pieza de código implementada.
-9. **Compilar o ejecutar** los programas antes de terminar una sesión para validar que no haya errores de sintaxis o ejecución.
+8. **Documentar el código** con comentarios explicativos en cada función, módulo y lógica compleja.
+9. **Proponer testing automático** (unitario o de integración) para cada pieza de código implementada.
+10. **Compilar o ejecutar** los programas antes de terminar una sesión para validar que no haya errores de sintaxis o ejecución.
 
 ### 🔀 Control de versiones y despliegue
-10. Al terminar cada modificación significativa, **preguntar al usuario**:
-    - ¿Deseas hacer commit de esta versión? (y sugerir un mensaje de commit descriptivo)
-    - ¿Deseas hacer deploy a producción?
-11. Usar mensajes de commit descriptivos en español, siguiendo el formato: `tipo(ámbito): descripción` (ej: `feat(carrito): agregar lógica de descuentos`)
+11. **Git es manejado exclusivamente por el usuario**: El usuario gestiona el control de versiones (vía GitKraken u otra herramienta). Los agentes **NUNCA** deben ejecutar comandos de Git para crear commits, hacer push o modificar el repositorio, ni realizar deploys.
+12. De manera opcional, el agente puede sugerir un mensaje de commit descriptivo en español siguiendo el formato `tipo(ámbito): descripción` para facilitarle el registro al usuario, pero la acción es 100% manual del usuario.
 
 ### 🧠 Expertise del agente para este proyecto
 El agente debe actuar como experto en:

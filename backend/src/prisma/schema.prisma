@@ -1,4 +1,4 @@
-﻿// NexusHardware — Schema de base de datos Prisma
+// NexusHardware — Schema de base de datos Prisma
 // Modela las entidades principales del e-commerce
 
 generator client {

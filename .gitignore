@@ -1,4 +1,4 @@
-﻿# Dependencias
+# Dependencias
 node_modules/
 .pnp
 .pnp.js
@@ -43,3 +43,8 @@ load-tests/results/
 # Caché
 .cache/
 .turbo/
+
+# Testing coverage
+coverage/
+*.lcov
+
