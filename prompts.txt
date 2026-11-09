@@ -231,3 +231,26 @@ ACCIÓN REALIZADA:
    - Se limpió el caché `.next` y se ejecutó `npm run build` en frontend: compilación de Next.js 16.4.3 exitosa sin advertencias ni errores (rutas `/` y `/carrito` prerenderizadas).
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #8]
+Fecha y hora: 2026-11-08 22:44 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"vamos con la ultima opcion, la de correr ambos con npm run dev, desde la raiz"
+[Aprobación explícita para configurar package.json raíz y ejecución concurrente de frontend y backend]
+
+ACCIÓN REALIZADA:
+1. CONFIGURACIÓN DEL MONOREPO (package.json raíz):
+   - Se creó `package.json` en la raíz del proyecto `nexushardware/` y un archivo puente en la carpeta contenedora `Desempeño de sistemas/`.
+   - Se configuraron los scripts directos para que `npm run dev` funcione directamente desde la terminal principal:
+     - `npm run dev`: corre concurrentemente tanto el backend como el frontend en una sola terminal con logs diferenciados por colores.
+     - `npm run dev:frontend`: corre únicamente el frontend de Next.js.
+     - `npm run dev:backend`: corre únicamente la API de Node.js/Express.
+     - `npm run install:all`: instala dependencias de ambos subproyectos en un solo paso.
+2. INSTALACIÓN DE DEPENDENCIAS:
+   - Se instaló la herramienta `concurrently` (^9.1.2) como devDependency en la raíz para orquestar la salida coloreada y paralela de ambos procesos (Node.js en puerto 4000 y Next.js en puerto 3000).
+
+================================================================================
