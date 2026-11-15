@@ -446,26 +446,3 @@ ACCIÓN REALIZADA:
    - Se ejecutó `npm run build` en `frontend/` con Turbopack: compilación 100% exitosa sin errores de TypeScript ni de prerenderizado estático en las 9 rutas del sitio.
 
 ================================================================================
-
---------------------------------------------------------------------------------
-[ENTRADA #15]
-Fecha y hora: 2026-11-15 12:05 (UTC-3, Santiago de Chile)
-Modelo IA: Gemini 3.8 Flash
---------------------------------------------------------------------------------
-
-PROMPT DEL USUARIO:
-"Build Error: Export GA_TRACKING_ID doesn't exist in target module"
-[Diagnóstico y resolución del error de Turbopack en importaciones cliente de GA4 y aseguramiento de portabilidad entre PCs]
-
-ACCIÓN REALIZADA:
-1. DESACOPLAMIENTO Y BLINDAJE DE GOOGLE ANALYTICS (frontend/src/lib/gtag.ts y GoogleAnalytics.tsx):
-   - Se aisló la constante de seguimiento en `GoogleAnalytics.tsx` (`const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-NEXUSHW2026"`) eliminando la dependencia rígida de exportación nombrada que generaba conflicto de resolución estática en Turbopack (Next.js 16.4.3).
-   - Se removió el bloque `declare global` dentro de `gtag.ts` que provocaba que el bundler ESM de Turbopack tratara el módulo como archivo exclusivo de declaraciones de tipos en entornos limpios.
-   - Se envolvieron los despachos de analítica con bloques `try/catch` para que ninguna falla de red o adblocker externo pueda interrumpir el renderizado de la interfaz.
-
-2. VERIFICACIÓN Y PORTABILIDAD:
-   - Se ejecutó `npm run build` en `frontend/`: compilación 100% exitosa sin advertencias de exports ni fallos de resolución de módulos.
-   - Se identificó la necesidad en GitKraken de asegurar que todos los archivos nuevos (Untracked) queden incluidos en el stage del commit para que al clonar en otros computadores el árbol de archivos esté íntegro.
-
-================================================================================
-
