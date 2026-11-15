@@ -313,3 +313,35 @@ ACCIÓN REALIZADA:
    - Se ejecutó `npm run build` en el frontend: compilación con Turbopack exitosa (0 errores), validación de TypeScript aprobada y prerenderizado estático de las nuevas rutas `/login` y `/registro`.
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #11]
+Fecha y hora: 2026-11-15 10:22 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Perfecto, llenemos la base de datos entonces."
+[Aprobación explícita para la expansión del catálogo de productos y población de PostgreSQL mediante Prisma Seed sin intervenir el frontend]
+
+ACCIÓN REALIZADA:
+1. EXPANSIÓN DEL CATÁLOGO DE HARDWARE (backend/src/prisma/seed.js):
+   - Se amplió el dataset de productos de 21 a 48 componentes de hardware de alta fidelidad técnica (distribuidos exactamente en 6 productos por cada una de las 8 categorías principales).
+   - Se agregaron modelos vigentes del mercado chileno de marcas oficiales (NVIDIA, AMD, Intel, ASUS, MSI, Corsair, Kingston, Samsung):
+     * Tarjetas Gráficas: RTX 4080 Super, RTX 4070 Ti OC, RX 7900 XTX, RTX 4060 OC, RTX 4070 Super Ventus 2X, RX 7800 XT TUF.
+     * Procesadores: Ryzen 7 7800X3D, Core i7-14700K, Ryzen 5 7600X, Core i5-14600K, Ryzen 9 7950X3D, Core i9-14900K.
+     * Memorias RAM: Kits DDR5 (6000MHz/6400MHz/5600MHz) y DDR4 (3600MHz/3200MHz) de 16GB, 32GB y 64GB.
+     * Almacenamiento SSD: Unidades NVMe PCIe 4.0/5.0 y SATA (Samsung 990 Pro, 980 Pro, 990 EVO, 870 EVO, Kingston KC3000, NV2).
+     * Placas Madre: Sockets AM5 y LGA1700 (ASUS ROG Strix, TUF Gaming, ROG Maximus Dark Hero, MSI MAG Tomahawk, PRO B760M).
+     * Fuentes de Poder: Modelos 80 Plus Gold, Bronze y Platinum con estándar ATX 3.0 / PCIe 5.0 (Corsair RM850x, RM750e, HX1000i, ASUS TUF 750W, Thor 1000W, MSI MAG A850GL).
+     * Gabinetes: Chasis Mid-Tower y doble cámara con flujo de aire y ARGB (Corsair 4000D, 5000D, 4000X, MSI Forge 100R, MPG Gungnir 110R, ASUS TUF GT502).
+     * Refrigeración: Sistemas AIO líquidos de 120mm, 240mm y 360mm con pantallas LCD y ARGB (Corsair H150i LCD XT, H100i iCUE LINK, H60x, ASUS Ryujin III, TUF LC II, MSI CoreLiquid 240R).
+   - Precios realistas en pesos chilenos ($ CLP) que van desde $54.990 hasta $1.199.990 y niveles de stock balanceados (de 6 a 50 unidades).
+2. EJECUCIÓN DEL SEED EN POSTGRESQL:
+   - Se ejecutó `npm run db:seed` (`prisma db seed`): limpieza previa en orden de dependencias, recreación de usuarios de prueba, 8 marcas, 8 categorías y 48 productos insertados exitosamente.
+3. TESTING AUTOMATIZADO:
+   - Ejecución de suite Jest en backend (`npm test`): **3/3 suites pasadas, 18/18 pruebas exitosas** validando paginación, filtros de búsqueda, marcas, categorías y endpoints de autenticación sin regresiones.
+4. RESTRICCIONES RESPETADAS:
+   - No se modificó ningún archivo del frontend conforme a la instrucción expresa del usuario.
+
+================================================================================
