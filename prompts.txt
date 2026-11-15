@@ -446,3 +446,87 @@ ACCIÓN REALIZADA:
    - Se ejecutó `npm run build` en `frontend/` con Turbopack: compilación 100% exitosa sin errores de TypeScript ni de prerenderizado estático en las 9 rutas del sitio.
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #15]
+Fecha y hora: 2026-11-15 12:39 (UTC-3, Santiago de Chile)
+Modelo IA: Claude Sonnet (Thinking)
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"No se pudo conectar con el servidor. Verifica que el backend esté corriendo en el puerto 4000.
+Al runnear mi pagina me aparece eso en el momento de logearme."
+
+ACCIÓN REALIZADA:
+1. DIAGNÓSTICO DEL ERROR:
+   - El error "No se pudo conectar con el servidor" (línea 77 de AuthContext.tsx) se dispara
+     cuando el fetch a /api/auth/login lanza una excepción de red, es decir, cuando el backend
+     Express simplemente no está corriendo.
+   - Se verificó con Get-NetTCPConnection que los puertos 4000 y 3000 estaban libres (sin proceso).
+   - Se identificó que backend/node_modules/ tampoco existía.
+
+2. CAUSA RAÍZ IDENTIFICADA:
+   - El archivo backend/.env no existía. Fue excluido por .gitignore (línea 13: ".env") como
+     medida de seguridad correcta para no exponer credenciales en Git.
+   - Sin .env, Prisma no puede conectarse a PostgreSQL y el servidor Express falla en el arranque.
+   - Adicionalmente, node_modules tampoco estaba presente (posible git clone limpio o limpieza manual).
+
+3. SOLUCIÓN IMPLEMENTADA:
+   - Se recreó backend/.env con las credenciales originales de la Entrada #3:
+     * DATABASE_URL=postgresql://postgres:3112@localhost:5432/nexushardware_db
+     * PORT=4000 / NODE_ENV=development
+     * JWT_SECRET=nexushardware_jwt_secret_utem_2026 / JWT_EXPIRES_IN=7d
+     * FRONTEND_URL=http://localhost:3000
+   - Se ejecutó `npm install` en backend/: 409 paquetes instalados exitosamente.
+   - Se ejecutó `npx prisma generate`: cliente Prisma v5.22.0 generado correctamente.
+   - Se validó la conexión a PostgreSQL con script temporal: "DB OK - Conectado a PostgreSQL correctamente".
+
+4. ESTADO FINAL:
+   - Backend listo para arrancar. El usuario debe ejecutar `npm run dev` desde la raíz
+     (o `dev.bat`) para levantar ambos servidores (puerto 4000 backend, puerto 3000 frontend).
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #16]
+Fecha y hora: 2026-11-15 12:42 (UTC-3, Santiago de Chile)
+Modelo IA: Claude Sonnet (Thinking)
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Invalid `tx.product.findMany()` invocation: The column `existe` does not exist
+in the current database. [Error en checkout al procesar la orden]"
+
+ACCIÓN REALIZADA:
+1. DIAGNÓSTICO DEL ERROR (columna `existe` inexistente):
+   - El error P2022 de Prisma indicaba que se intentaba consultar la columna `existe`
+     en la tabla Product, columna que no existía en PostgreSQL.
+   - Causa raíz: la tabla Product en la DB real carecía de la columna `specs` (tipo jsonb)
+     que sí estaba definida en schema.prisma. La migración inicial fue incompleta y la DB
+     quedó desincronizada con el schema (faltaba la columna specs).
+   - Prisma internamente intentaba mapear `specs` como `existe` por corrupción del cliente
+     cacheado (generado con --no-engine en un paso intermedio, que requiere Prisma Accelerate
+     y no funciona con postgresql:// directo).
+
+2. SOLUCIÓN IMPLEMENTADA (pasos en orden):
+   a. Se eliminaron `node_modules/.prisma` y `node_modules/@prisma` para limpiar el cliente
+      corrupto.
+   b. Se reinstalaron las dependencias: `npm install` (409 paquetes).
+   c. Se ejecutó `npx prisma db push` para sincronizar la DB con el schema actual,
+      añadiendo la columna `specs jsonb` a la tabla Product.
+      Resultado: "Your database is now in sync with your Prisma schema."
+   d. Se regeneró el cliente Prisma limpio: `npx prisma generate` (v5.22.0).
+   e. Se ejecutó `npm run db:seed` para repoblar los 48 productos (el push resetea datos).
+
+3. BUG ADICIONAL CORREGIDO (productController.js):
+   - Se identificó que la función `getProducts` sobrescribía el objeto `brand` con solo
+     el string del nombre (`brand: p.brand?.name || ""`), destruyendo `brand.slug` y
+     rompiendo el filtro por marca y el test correspondiente.
+   - Se corrigió para mantener el objeto completo: `brand: p.brand ?? null`.
+
+4. VALIDACIÓN FINAL:
+   - `npm test`: 4/4 suites pasadas, 28/28 tests exitosos (100%) en 3.4s.
+   - Columnas verificadas en PostgreSQL: id, name, slug, description, price, stock,
+     imageUrl, categoryId, brandId, createdAt, updatedAt, specs (jsonb) ✅.
+
+================================================================================

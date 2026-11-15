@@ -174,11 +174,11 @@ async function getProducts(req, res, next) {
 
     const totalPages = Math.ceil(total / limit) || 1;
 
-    // Enriquecemos cada producto con sus specs y compatibilidad de estructura
+    // Enriquecemos cada producto con sus specs manteniendo objetos brand y category completos
     const enrichedProducts = products.map((p) => ({
       ...p,
-      brand: p.brand?.name || p.brand || "",
-      category: p.category?.name || p.category || "",
+      brand: p.brand ?? null,
+      category: p.category ?? null,
       specs: getSpecsForProduct(p),
       rating: p.rating ?? 4.8,
       reviews: p.reviews ?? 16,
