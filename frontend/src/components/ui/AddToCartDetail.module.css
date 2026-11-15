@@ -1,0 +1,94 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+  padding: var(--space-lg) 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.qtyLabel {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.qtySelector {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  gap: 10px;
+}
+
+.qtyBtn {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.qtyBtn:hover:not(:disabled) {
+  background: var(--green-glow);
+  color: var(--green);
+}
+
+.qtyBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qtyValue {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.stockInfo {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.buttonsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  flex: 1;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.buyNowBtn {
+  min-width: 150px;
+  justify-content: center;
+}
+
+.added {
+  background: var(--green) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(217, 83, 30, 0.35) !important;
+}
+
