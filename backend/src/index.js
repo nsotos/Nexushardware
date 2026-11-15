@@ -24,10 +24,12 @@ app.use(morgan("dev")); // Log de peticiones HTTP en consola
 const productRoutes = require("./routes/productRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const brandRoutes = require("./routes/brandRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/brands", brandRoutes);
+app.use("/api/auth", authRoutes);
 
 // Ruta de health check para verificar que la API está activa
 app.get("/api/health", (req, res) => {

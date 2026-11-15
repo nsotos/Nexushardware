@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const { totalItems } = useCart();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   const handleSearch = (e: FormEvent) => {
@@ -76,8 +78,33 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        {/* Acciones: Carrito de compras */}
+        {/* Acciones: Carrito y Autenticación */}
         <div className={styles.actions}>
+          {/* Menú de Usuario / Login */}
+          {user ? (
+            <div className={styles.userMenu}>
+              <div className={styles.userBadge}>
+                <span>👤 {user.name}</span>
+                {user.role === "ADMIN" && (
+                  <span className={styles.userRole}>Admin</span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={logout}
+                className={styles.logoutBtn}
+                title="Cerrar Sesión"
+              >
+                Salir
+              </button>
+            </div>
+          ) : (
+            <Link href="/login" className="btn btn-secondary btn-sm">
+              Iniciar Sesión
+            </Link>
+          )}
+
+          {/* Carrito de compras */}
           <Link href="/carrito" className={styles.cartButton} aria-label="Ver carrito de compras">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -93,4 +120,3 @@ export default function Navbar() {
     </header>
   );
 }
-

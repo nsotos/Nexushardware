@@ -254,3 +254,62 @@ ACCIÓN REALIZADA:
    - Se instaló la herramienta `concurrently` (^9.1.2) como devDependency en la raíz para orquestar la salida coloreada y paralela de ambos procesos (Node.js en puerto 4000 y Next.js en puerto 3000).
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #9]
+Fecha y hora: 2026-11-15 10:04 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Perfecto, entonces ayudame a crear la api de login con API REST con JWT"
+[Aprobación explícita para implementación de la API REST de Autenticación con JWT en el backend]
+
+ACCIÓN REALIZADA:
+1. MIDDLEWARE DE AUTENTICACIÓN Y AUTORIZACIÓN (backend/src/middleware/authMiddleware.js):
+   - `generateToken(user)`: función para firmar tokens JWT con payload de identidad (id, email, role, name) con expiración configurable (7 días por defecto).
+   - `protect`: middleware de verificación de cabecera `Authorization: Bearer <token>`, decodificación criptográfica del JWT y consulta de integridad del usuario en PostgreSQL con Prisma.
+   - `authorize(...roles)`: middleware para protección de recursos por roles (ej: ADMIN).
+2. CONTROLADOR DE AUTENTICACIÓN (backend/src/controllers/authController.js):
+   - `register`: registro de clientes con validación de unicidad de correo, encriptación unidireccional de contraseñas con bcrypt (10 rondas de salt) y retorno de token JWT junto a datos públicos del usuario.
+   - `login`: autenticación con comparación de hash bcrypt (`bcrypt.compare`), mensaje seguro ante credenciales inválidas y generación de token JWT.
+   - `getProfile`: endpoint `/me` para consultar el perfil del usuario autenticado actual.
+3. RUTAS HTTP Y VALIDACIÓN (backend/src/routes/authRoutes.js):
+   - Se implementaron validaciones con `express-validator`: formato de correo normalizado, nombre no vacío (2 a 100 caracteres) y contraseña de al menos 6 caracteres.
+   - Montadas en `backend/src/index.js` bajo el prefijo `/api/auth` (`POST /register`, `POST /login`, `GET /me`).
+4. TESTING AUTOMATIZADO Y VALIDACIÓN:
+   - Se creó `backend/tests/auth.test.js` con 9 casos de prueba exhaustivos que cubren registro exitoso, prevención de correos duplicados, validaciones de contraseña, login válido, login con clave incorrecta, usuario inexistente, acceso autorizado a `/me`, y bloqueo ante ausencia o corrupción de token.
+   - Se ejecutó la suite completa de Jest: **3/3 suites pasadas, 18/18 tests exitosos (100% de aprobación)** en 2.9s.
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #10]
+Fecha y hora: 2026-11-15 10:11 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Ok, ayudame creando el apartado de log-in en el frontend"
+[Aprobación explícita para la implementación de la interfaz de usuario de autenticación, contexto de sesión y vistas en Next.js]
+
+ACCIÓN REALIZADA:
+1. CONTEXTO GLOBAL DE AUTENTICACIÓN (frontend/src/context/AuthContext.tsx):
+   - Creación de `AuthProvider` y hook `useAuth` para administración global del estado de sesión (`user`, `token`, `login`, `register`, `logout`).
+   - Integración de persistencia de sesión con `localStorage` (`nexus_token` y `nexus_user`).
+   - Conexión con los endpoints del backend Express (`/api/auth/login` y `/api/auth/register`).
+2. VISTA DE INICIO DE SESIÓN (frontend/src/app/login/page.tsx y login.module.css):
+   - Formulario con campos de correo electrónico y contraseña bajo el sistema de diseño retro claro.
+   - Manejo interactivo de estados de carga ("Verificando credenciales...") y despliegue de alertas ante errores de autenticación.
+   - Caja interactiva de "Autocompletar credenciales de prueba" (`cliente@utem.cl` / `Password123!`) para evaluación y testing rápido.
+   - Enlace de redirección hacia la vista de registro.
+3. VISTA DE REGISTRO DE CLIENTES (frontend/src/app/registro/page.tsx):
+   - Formulario de creación de cuenta nueva (nombre completo, correo y contraseña de mínimo 6 caracteres).
+   - Conexión directa a la API y login automático al registrarse.
+4. ACTUALIZACIÓN DE LAYOUT Y NAVEGACIÓN:
+   - Integración de `AuthProvider` en `frontend/src/app/layout.tsx`.
+   - Modificación de `Navbar.tsx` y `Navbar.module.css`: despliegue dinámico de botón "Iniciar Sesión" (para visitantes) o de badge con nombre del usuario autenticado ("👤 [Nombre]"), rol y botón "Salir" para cerrar sesión.
+5. VALIDACIÓN DE COMPILACIÓN:
+   - Se ejecutó `npm run build` en el frontend: compilación con Turbopack exitosa (0 errores), validación de TypeScript aprobada y prerenderizado estático de las nuevas rutas `/login` y `/registro`.
+
+================================================================================

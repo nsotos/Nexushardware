@@ -158,3 +158,49 @@
   }
 }
 
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.userBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.userRole {
+  font-size: 0.7rem;
+  background: rgba(43, 89, 195, 0.1);
+  color: var(--blue);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.logoutBtn {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background: rgba(211, 47, 47, 0.08);
+  border-color: var(--red);
+  color: var(--red);
+}
