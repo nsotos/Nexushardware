@@ -371,3 +371,78 @@ ACCIÓN REALIZADA:
    - No se modificó ningún archivo del frontend conforme a la coordinación de equipo.
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #13]
+Fecha y hora: 2026-11-15 11:39 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Confirmo, ayudame con la implementacion de GA4 y conecta todos los modulos con el frontend"
+[Aprobación explícita para la implementación de Google Analytics 4 (gtag.js), flujo de Checkout Sandbox y unificación de páginas de catálogo y detalle en Next.js]
+
+ACCIÓN REALIZADA:
+1. INTEGRACIÓN OFICIAL DE GOOGLE ANALYTICS 4 — GA4 (frontend/src/lib/gtag.ts y GoogleAnalytics.tsx):
+   - Se implementó el cliente oficial basado en `gtag.js` con soporte para el ID parametrizado `NEXT_PUBLIC_GA_ID` (valor de desarrollo `G-NEXUSHW2026`).
+   - Se inyectó el script oficial de Google Tag mediante `next/script` (`strategy="afterInteractive"`) y un listener reactivo con `usePathname` / `useSearchParams` envuelto en `Suspense` para registrar `pageview` en cada navegación de ruta.
+   - Se implementaron y tiparon las funciones para disparar los 4 eventos clave de e-commerce requeridos por la Fase 1.1:
+     * `view_item`: ficha de detalle del producto vista por el usuario.
+     * `add_to_cart`: producto añadido al carrito desde grillas o página de detalle.
+     * `begin_checkout`: usuario que avanza desde el carrito hacia el checkout.
+     * `purchase`: orden completada exitosamente en el sandbox con transaction_id, valor total y desglose de ítems.
+   - Integración global del componente `<GoogleAnalytics />` en `frontend/src/app/layout.tsx`.
+   - Documentación del requerimiento de compartir la propiedad de GA4 con el profesor (j.aranda@utem.cl).
+
+2. FLUJO DE CHECKOUT TRANSBANK SANDBOX (frontend/src/app/checkout/page.tsx y checkout.module.css):
+   - Conexión completa entre el frontend y el endpoint transaccional del backend Express (`/api/orders`) a través de la nueva función `createOrder` en `frontend/src/lib/api.ts`.
+   - Formulario de despacho y facturación (nombre, RUT, correo, teléfono, dirección y comuna).
+   - Detección de sesión activa con `AuthContext` (soporte para compra de usuarios autenticados o con acceso rápido).
+   - Caja interactiva de pasarela de pago Transbank Webpay Plus (Sandbox).
+   - Al confirmar el pago, procesa la compra en el backend, dispara el evento GA4 `purchase`, vacía el carrito (`clearCart`) y renderiza en pantalla el Voucher / Comprobante oficial de Webpay Plus (código de autorización, tarjeta **** 6623, fecha/hora, número de orden y monto en CLP con botón para imprimir o volver a la tienda).
+   - Enlace actualizado en `frontend/src/app/carrito/page.tsx` para disparar `begin_checkout` y redirigir a `/checkout`.
+
+3. UNIFICACIÓN DE PÁGINAS DEL CATÁLOGO Y DETALLE (Requisito de 3 páginas con distinta carga de datos):
+   - Vista de Catálogo Completo (`frontend/src/app/productos/page.tsx` y `productos.module.css`):
+     * Grilla de productos con filtros interactivos por categoría (8 categorías), marcas oficiales (8 marcas), ordenamiento por precio/calificación y caja de búsqueda conectada con el `Navbar`.
+     * Soporte de fallback y persistencia de filtros en la URL (`search`, `categoria`, `marca`, `ofertas`).
+   - Vista de Detalle de Producto (`frontend/src/app/productos/[slug]/page.tsx` y `detalle.module.css`):
+     * Carga dinámica de datos por slug con SSR y fallback a mockData.
+     * Migas de pan de navegación (breadcrumbs), imagen principal con badges, ficha de especificaciones técnicas completas y productos relacionados.
+     * Integración con `ProductAnalyticsTracker.tsx` para emisión del evento GA4 `view_item`.
+     * Integración de `AddToCartDetail.tsx` con selector interactivo de unidades y disparo de `add_to_cart`.
+
+4. VALIDACIÓN DE COMPILACIÓN Y CALIDAD:
+   - Se instalaron las dependencias de producción en `frontend` (344 paquetes).
+   - Se validó la compilación de producción con Next.js 16.4.3 (`npm run build`): compilación exitosa (0 errores de TypeScript, 0 errores de Turbopack) con todas las rutas estáticas y dinámicas prerenderizadas (`/`, `/carrito`, `/checkout`, `/login`, `/registro`, `/productos`, `/productos/[slug]`).
+   - Se creó `backend/.env` con la configuración de variables de entorno seguras para el funcionamiento local.
+
+================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #14]
+Fecha y hora: 2026-11-15 11:53 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Procedamos con el arreglo de problemas de carga y falta de productos."
+[Aprobación explícita para la optimización de velocidad de carga de Next.js, sincronización de los 48 productos oficiales y despliegue de especificaciones técnicas]
+
+ACCIÓN REALIZADA:
+1. OPTIMIZACIÓN DE RENDIMIENTO Y VELOCIDAD DE CARGA (frontend/src/lib/api.ts):
+   - Se incorporó control de tiempo límite con `signal: AbortSignal.timeout(1200)` en todas las llamadas `fetch` para prevenir bloqueos de socket o congelamiento de la interfaz de usuario ante demoras de red.
+   - Se resolvió la discrepancia de contratos API normalizando la lectura de propiedades (`data.data || data.products` y `data.data || data.product`) para garantizar comunicación fluida entre Express y Next.js.
+
+2. CATÁLOGO COMPLETO DE 48 COMPONENTES (frontend/src/lib/mockData.ts):
+   - Se expandió el dataset oficial de respaldo de 21 a 48 productos clasificados equitativamente en 6 ítems por cada una de las 8 categorías (Tarjetas Gráficas, Procesadores, RAM, SSD, Placas Madre, Fuentes de Poder, Gabinetes y Refrigeración) de marcas oficiales (ASUS, NVIDIA, AMD, Kingston, Corsair, Intel, MSI, Samsung).
+   - Se incorporaron especificaciones técnicas completas (`specs`) para cada uno de los 48 componentes (frecuencias, socket, VRAM, certificaciones 80 Plus, latencias, velocidades de lectura/escritura NVMe).
+
+3. ENRIQUECIMIENTO DE ESPECIFICACIONES TÉCNICAS (backend/src/controllers/productController.js y frontend):
+   - Se implementó la función generadora de especificaciones de hardware `getSpecsForProduct(product)` en el controlador de la API para garantizar que todo producto consultado desde PostgreSQL o Express entregue siempre su ficha técnica completa.
+   - Se adaptó la vista de detalle `frontend/src/app/productos/[slug]/page.tsx` con un analizador tolerante (`parsedSpecs`) que procesa tanto objetos como strings JSON sin errores de renderizado.
+
+4. VALIDACIÓN DE COMPILACIÓN:
+   - Se ejecutó `npm run build` en `frontend/` con Turbopack: compilación 100% exitosa sin errores de TypeScript ni de prerenderizado estático en las 9 rutas del sitio.
+
+================================================================================

@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { trackBeginCheckout } from "@/lib/gtag";
 import styles from "./carrito.module.css";
 
 function formatCLP(amount: number): string {
@@ -15,6 +17,12 @@ function formatCLP(amount: number): string {
 
 export default function CartPage() {
   const { items, totalItems, totalPrice, updateQty, removeItem, clearCart } = useCart();
+  const router = useRouter();
+
+  const handleCheckout = () => {
+    trackBeginCheckout(items, totalPrice);
+    router.push("/checkout");
+  };
 
   if (items.length === 0) {
     return (
@@ -119,7 +127,7 @@ export default function CartPage() {
           <button
             type="button"
             className="btn btn-primary btn-full"
-            onClick={() => alert("Flujo de Checkout Sandbox: Redirigiendo a pasarela de pago simulada...")}
+            onClick={handleCheckout}
           >
             Proceder al Checkout (Sandbox)
           </button>

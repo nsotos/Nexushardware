@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/mockData";
 import { useCart } from "@/context/CartContext";
+import { trackAddToCart } from "@/lib/gtag";
 import styles from "./AddToCartDetail.module.css";
 
 interface AddToCartDetailProps {
@@ -28,6 +29,7 @@ export default function AddToCartDetail({ product }: AddToCartDetailProps) {
       updateQty(product.id, existing.quantity + quantity);
     }
 
+    trackAddToCart(product, quantity);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1600);
   };

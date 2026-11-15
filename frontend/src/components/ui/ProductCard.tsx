@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, MouseEvent } from "react";
 import { Product } from "@/lib/mockData";
 import { useCart } from "@/context/CartContext";
+import { trackAddToCart } from "@/lib/gtag";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
@@ -30,6 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
+    trackAddToCart(product, 1);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
