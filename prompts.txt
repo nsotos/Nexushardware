@@ -345,3 +345,29 @@ ACCIÓN REALIZADA:
    - No se modificó ningún archivo del frontend conforme a la instrucción expresa del usuario.
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #12]
+Fecha y hora: 2026-11-15 10:40 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Me parece perfecta la estructura, implementemos el checkout."
+[Aprobación explícita para la implementación del módulo de Checkout y Órdenes de compra transaccionales en el backend]
+
+ACCIÓN REALIZADA:
+1. CONTROLADOR DE CHECKOUT Y ÓRDENES (backend/src/controllers/orderController.js):
+   - `createOrder`: Procesa la compra del carrito validando stock en PostgreSQL mediante transacciones atómicas (`prisma.$transaction`) para prevenir condiciones de carrera (race conditions) bajo cargas concurrentes. Descuenta el stock de productos comprados (`decrement: quantity`), crea la orden con estado `PAID` y sus respectivos `OrderItem`. Genera automáticamente un comprobante/voucher simulado con formato oficial de Transbank Webpay Plus (`authorizationCode`, `responseCode: 0`, `cardNumber: "**** **** **** 6623"`, `amount`, `transactionDate`).
+   - `getMyOrders`: Retorna el historial de compras del usuario autenticado ordenado cronológicamente con el detalle de productos, cantidades y montos en CLP.
+   - `getOrderById`: Consulta el detalle y voucher de una orden por ID con validación de pertenencia (solo el cliente dueño o ADMIN).
+2. RUTAS HTTP Y SEGURIDAD (backend/src/routes/orderRoutes.js):
+   - Se protegieron todas las rutas con el middleware `protect` (JWT obligatorio).
+   - Montado en `backend/src/index.js` bajo el prefijo `/api/orders` (`POST /`, `GET /my-orders`, `GET /:id`).
+3. TESTING AUTOMATIZADO Y VALIDACIÓN INTEGRAL:
+   - Se creó `backend/tests/orders.test.js` con 10 pruebas unitarias y de integración: bloqueo sin token (401), validación de carrito vacío o cantidades inválidas (400), producto inexistente (404), compra exitosa con verificación de descuento atómico en base de datos PostgreSQL, rechazo por stock insuficiente (400) y consulta de historial/detalle.
+   - Ejecución completa de Jest: **4/4 suites pasadas, 28/28 tests exitosos (100% de aprobación)** en 3.5 segundos con tiempo de respuesta transaccional de ~20ms.
+4. RESTRICCIONES RESPETADAS:
+   - No se modificó ningún archivo del frontend conforme a la coordinación de equipo.
+
+================================================================================
