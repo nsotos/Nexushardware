@@ -468,3 +468,4 @@ ACCIÓN REALIZADA:
    - Se identificó la necesidad en GitKraken de asegurar que todos los archivos nuevos (Untracked) queden incluidos en el stage del commit para que al clonar en otros computadores el árbol de archivos esté íntegro.
 
 ================================================================================
+
