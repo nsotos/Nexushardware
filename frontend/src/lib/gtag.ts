@@ -7,33 +7,34 @@
 import type { Product } from "./mockData";
 import type { CartItem } from "@/context/CartContext";
 
-export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || "G-NEXUSHW2026";
-
-// Declaración global para TypeScript
-declare global {
-  interface Window {
-    dataLayer: any[];
-    gtag: (...args: any[]) => void;
-  }
-}
+export const GA_TRACKING_ID: string =
+  process.env.NEXT_PUBLIC_GA_ID || "G-NEXUSHW2026";
 
 /**
  * Registra una vista de página en Google Analytics 4
  */
-export function pageview(url: string) {
-  if (typeof window !== "undefined" && typeof window.gtag === "function") {
-    window.gtag("config", GA_TRACKING_ID, {
-      page_path: url,
-    });
+export function pageview(url: string): void {
+  try {
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("config", GA_TRACKING_ID, {
+        page_path: url,
+      });
+    }
+  } catch {
+    // Silencioso para prevenir cualquier fallo de ejecución en la UI
   }
 }
 
 /**
  * Dispara un evento personalizado genérico en Google Analytics 4
  */
-export function event(action: string, params: Record<string, any> = {}) {
-  if (typeof window !== "undefined" && typeof window.gtag === "function") {
-    window.gtag("event", action, params);
+export function event(action: string, params: Record<string, any> = {}): void {
+  try {
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", action, params);
+    }
+  } catch {
+    // Silencioso
   }
 }
 
@@ -41,7 +42,7 @@ export function event(action: string, params: Record<string, any> = {}) {
  * Evento GA4: view_item
  * Se dispara cuando el usuario visualiza la ficha de detalle de un producto.
  */
-export function trackViewItem(product: Product) {
+export function trackViewItem(product: Product): void {
   event("view_item", {
     currency: "CLP",
     value: product.price,
@@ -62,7 +63,7 @@ export function trackViewItem(product: Product) {
  * Evento GA4: add_to_cart
  * Se dispara cuando un producto es añadido al carrito de compras.
  */
-export function trackAddToCart(product: Product, quantity = 1) {
+export function trackAddToCart(product: Product, quantity = 1): void {
   event("add_to_cart", {
     currency: "CLP",
     value: product.price * quantity,
@@ -83,7 +84,7 @@ export function trackAddToCart(product: Product, quantity = 1) {
  * Evento GA4: begin_checkout
  * Se dispara al iniciar el flujo de pago desde el carrito de compras.
  */
-export function trackBeginCheckout(items: CartItem[], totalValue: number) {
+export function trackBeginCheckout(items: CartItem[], totalValue: number): void {
   event("begin_checkout", {
     currency: "CLP",
     value: totalValue,
@@ -113,7 +114,7 @@ export function trackPurchase(order: {
     price: number;
     quantity: number;
   }>;
-}) {
+}): void {
   event("purchase", {
     transaction_id: String(order.id),
     currency: "CLP",
@@ -130,3 +131,4 @@ export function trackPurchase(order: {
   });
 }
 
+export default GA_TRACKING_ID;

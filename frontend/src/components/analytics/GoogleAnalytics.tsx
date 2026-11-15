@@ -3,7 +3,9 @@
 import Script from "next/script";
 import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { GA_TRACKING_ID, pageview } from "@/lib/gtag";
+import { pageview } from "@/lib/gtag";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-NEXUSHW2026";
 
 /**
  * Escucha cambios en la ruta y query params para reportar pageviews a GA4
@@ -31,7 +33,7 @@ export default function GoogleAnalytics() {
     <>
       <Script
         strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
       />
       <Script
         id="google-analytics-init"
@@ -41,7 +43,7 @@ export default function GoogleAnalytics() {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${GA_TRACKING_ID}', {
+            gtag('config', '${GA_ID}', {
               page_path: window.location.pathname,
             });
           `,
@@ -53,4 +55,3 @@ export default function GoogleAnalytics() {
     </>
   );
 }
-
