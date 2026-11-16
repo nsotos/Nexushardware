@@ -530,3 +530,51 @@ ACCIÓN REALIZADA:
      imageUrl, categoryId, brandId, createdAt, updatedAt, specs (jsonb) ✅.
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+[ENTRADA #17]
+Fecha y hora: 2026-11-15 14:04 (UTC-3, Santiago de Chile)
+Modelo IA: Gemini 3.8 Flash
+--------------------------------------------------------------------------------
+
+PROMPT DEL USUARIO:
+"Me parece bien la propuesta y la estructura planteada con Locust. 
+Por favor, procede únicamente con lo siguiente en este paso:
+1. Crea los archivos físicos en la carpeta load-tests/:
+   - config.py (con los datos y credenciales de prueba base).
+   - locustfile.py (con las tareas ponderadas y rutas normalizadas como acordamos).
+   - La carpeta scenarios/ con los tres archivos de configuración (low_load.conf, sustained.conf, stress.conf) basados en los parámetros de la tabla (Carga baja: 10 VUs / Carga normal: 60 VUs / Carga estrés: 300 VUs).
+   - requirements.txt con la dependencia de locust.
+2. Valida la sintaxis de Python de los archivos creados.
+3. Actualiza de forma inmediata el archivo prompts.txt registrando esta entrada con la fecha, hora y el resumen de lo realizado.
+Recuerda: NO ejecutes todavía los tests ni modifiques código de la aplicación principal (frontend o backend). Solo crea la estructura de la carpeta load-tests/ y actualiza el prompts.txt. Avísame cuando esté listo para revisarlo."
+
+ACCIÓN REALIZADA:
+1. ESTRUCTURA Y ARCHIVOS DE PRUEBAS DE CARGA (load-tests/):
+   - Se creó `load-tests/config.py`: Definición de host base (http://localhost:4000), credenciales del cliente de prueba (cliente@utem.cl / Password123!), lista de 32 slugs reales de hardware poblados en PostgreSQL, términos de búsqueda habituales (RTX, Ryzen, ASUS, etc.), categorías y marcas oficiales.
+   - Se creó `load-tests/locustfile.py`: Implementación de `NexusEcommerceUser(HttpUser)` modelando el comportamiento realista de usuarios con tiempo de reflexión humano (`between(1.0, 3.0)` segundos), sesión JWT opcional en on_start y tareas ponderadas:
+     * Tarea @task(28): Navegación paginada del catálogo (GET /api/products?page=N&limit=12).
+     * Tarea @task(18): Búsquedas textuales por hardware y componentes (GET /api/products?search=query).
+     * Tarea @task(14): Filtros relacionales por categoría o marca oficial.
+     * Tarea @task(10): Carga de taxonomías para menús y footer (GET /api/categories, GET /api/brands).
+     * Tarea @task(22): Consulta de ficha técnica y especificaciones de componentes (GET /api/products/:slug).
+     * Tarea @task(5): Verificación de perfil e historial de compras con token JWT (GET /api/auth/me, GET /api/orders/my-orders).
+     * Tarea @task(3): Checkout transaccional atómico contra Transbank Sandbox (POST /api/orders) con manejo tolerante de respuesta ante agotamiento concurrente de stock (HTTP 400 controlado).
+     * Normalización de métricas usando el parámetro `name` en todas las llamadas HTTP para asegurar reportes limpios y consolidados.
+   - Se creó la suite de escenarios de ejecución desatendida (`load-tests/scenarios/`):
+     * `low_load.conf`: Escenario 1 (Carga baja / baseline) configurado con 10 VUs, spawn-rate de 2/s, 2 minutos de duración y salida a `load-tests/reports/low_load_report.html` y CSV.
+     * `sustained.conf`: Escenario 2 (Carga sostenida normal) configurado con 60 VUs, spawn-rate de 3/s, 5 minutos de duración y salida a `load-tests/reports/sustained_report.html` y CSV.
+     * `stress.conf`: Escenario 3 (Carga pico / estrés) configurado con 300 VUs, spawn-rate de 15/s, 3 minutos de duración y salida a `load-tests/reports/stress_report.html` y CSV.
+   - Se creó `load-tests/requirements.txt`: Especificación de dependencia `locust>=2.31.0`.
+   - Se creó `load-tests/reports/.gitkeep`: Inicialización de la carpeta de destino para artefactos y métricas de desempeño.
+
+2. VALIDACIÓN DE SINTAXIS PYTHON:
+   - Se ejecutó `python -m py_compile load-tests/config.py load-tests/locustfile.py`.
+   - Resultado: Compilación limpia con código de salida 0, confirmando 0 errores de sintaxis en el código de simulación.
+
+3. RESTRICCIONES RESPETADAS:
+   - No se ejecutó ninguna prueba de carga contra los servidores.
+   - No se modificó ningún archivo del backend ni del frontend.
+   - No se ejecutaron comandos de Git.
+
+================================================================================

@@ -1,0 +1,2 @@
+# Dependencias de Python para pruebas de carga en NexusHardware
+locust>=2.31.0
