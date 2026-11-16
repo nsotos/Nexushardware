@@ -13,7 +13,7 @@ Proyecto académico — Asignatura: **Desempeño de Sistemas** | UTEM | Semestre
 - **Base de datos:** PostgreSQL + Prisma ORM
 - **Autenticación:** NextAuth.js
 - **Analítica:** Google Analytics 4
-- **Pruebas de carga:** k6
+- **Pruebas de carga:** locust
 
 ## Estructura del Proyecto
 
@@ -21,7 +21,7 @@ Proyecto académico — Asignatura: **Desempeño de Sistemas** | UTEM | Semestre
 nexushardware/
 ├── frontend/       # Aplicación Next.js
 ├── backend/        # API REST Node.js + Express
-├── load-tests/     # Scripts de carga k6
+├── load-tests/     # Scripts de carga locust
 └── docs/           # Documentación e informes
 ```
 
