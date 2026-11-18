@@ -3,9 +3,9 @@
 E-commerce especializado en componentes de computador de marcas líderes: ASUS, NVIDIA, Kingston, AMD, Corsair, Intel, MSI, Samsung y más.
 
 #Integrantes
-Maritza Castillo Gómez
-Nicolás Soto Sanhueza
-Ignacio Veliz Oliva
+-Maritza Castillo Gómez
+-Nicolás Soto Sanhueza
+-Ignacio Veliz Oliva
 
 ## Descripción
 
