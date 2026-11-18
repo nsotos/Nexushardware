@@ -2,6 +2,11 @@
 
 E-commerce especializado en componentes de computador de marcas líderes: ASUS, NVIDIA, Kingston, AMD, Corsair, Intel, MSI, Samsung y más.
 
+#Integrantes
+Maritza Castillo Gómez
+Nicolás Soto Sanhueza
+Ignacio Veliz Oliva
+
 ## Descripción
 
 Proyecto académico — Asignatura: **Desempeño de Sistemas** | UTEM | Semestre 2 - 2026
