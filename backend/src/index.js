@@ -11,6 +11,23 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Para medir la CPU
+ const pidusage = require('pidusage'); // O import pidusage from 'pidusage'; si usas ES Modules
+
+app.get('/api/debug/metrics', async (req, res) => {
+  try {
+    const stats = await pidusage(process.pid);
+    res.json({
+      cpu_percent: stats.cpu.toFixed(2) + '%',
+      ram_rss_mb: (stats.memory / 1024 / 1024).toFixed(2) + ' MB',
+      uptime_sec: Math.round(process.uptime())
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+// --------
+
 // ─── Middlewares globales ─────────────────────────────────────────────────────
 app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:3000",
